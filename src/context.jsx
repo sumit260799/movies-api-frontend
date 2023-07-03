@@ -1,28 +1,46 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useState,
+} from "react";
 import axios from "axios";
 const API_ENDPOINT = "http://localhost:3000/?";
 const AppContext = createContext();
-
+import { SET_LOADING, SET_MOVIES, HANDLE_PAGE } from "./action";
+import reducer from "./reducer";
+const initialState = {
+  isLoading: true,
+  movies: [],
+  search: "",
+  page: 1,
+  totalPages: 0,
+};
 function AppProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [movies, setMovies] = useState([]);
-  console.log(typeof movies);
-
-  const [query, setQuery] = useState("");
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const handlePage = (value) => {
+    dispatch({ type: HANDLE_PAGE, payload: value });
+  };
   const fetchData = async (url) => {
-    setIsLoading(true);
+    dispatch({ type: SET_LOADING });
+
     try {
-      await axios.get(url).then((res) => setMovies(res.data.movies));
-      setIsLoading(false);
+      const response = await axios.get(url);
+      const { movies, totalPages } = response.data;
+      dispatch({
+        type: SET_MOVIES,
+        payload: { movies, totalPages },
+      });
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
-    fetchData(`${API_ENDPOINT}&search=${query}`);
-  }, []);
+    fetchData(`${API_ENDPOINT}&search=${state.search}&page=${state.page}`);
+  }, [state.page]);
   return (
-    <AppContext.Provider value={{ isLoading, movies, query }}>
+    <AppContext.Provider value={{ ...state, handlePage }}>
       {children}
     </AppContext.Provider>
   );
