@@ -1,8 +1,16 @@
 import React from "react";
 import { useGlobalContext } from "./context";
+import Movies from "./Movies";
+import Search from "./Search";
+import Buttons from "./Buttons";
 function App() {
-  const { name } = useGlobalContext();
-  return <div>{name}</div>;
+  return (
+    <div>
+      <Search />
+      <Movies />
+      <Buttons />
+    </div>
+  );
 }
 
 export default App;
