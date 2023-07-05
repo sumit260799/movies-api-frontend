@@ -18,7 +18,11 @@ const SingleMovie = () => {
   }, [name]);
 
   if (isLoading) {
-    return <div className="spinner"></div>;
+    return (
+      <div className="spinner">
+        <div className="spinner-ring"></div>
+      </div>
+    );
   }
   return (
     <>
