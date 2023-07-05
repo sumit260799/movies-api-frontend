@@ -5,20 +5,33 @@ const url =
 import { Link } from "react-router-dom";
 const Movies = () => {
   const { movies, isLoading } = useGlobalContext();
-  console.log(movies);
   if (isLoading) {
-    return <div className="loading">Loading.....</div>;
+    return (
+      <div className="spinner">
+        <div className="spinner-ring"></div>
+      </div>
+    );
   }
   return (
-    <section className="movies">
+    <section className="movies grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 justify-around gap-5 lg:gap-10">
       {movies.map((movie) => {
         const { _id, name, poster, desc, year, imdb, genre } = movie;
         return (
-          <Link to={`/movies/${_id}`} key={_id} className="movie">
-            <article>
-              <img src={poster} alt={name} />
+          <Link
+            to={`/singlemovie/${name}`}
+            key={_id}
+            className="movie h-[260px] sm:h-[300px]  xl:h-[350px] overflow-hidden"
+          >
+            <article className="w-[100%] h-[100%]  overflow-hidden">
+              <img
+                className="object-cover block w-[100%] h-[100%]"
+                src={poster}
+                alt={name}
+              />
+              <span className="imdb">{imdb}</span>
               <div className="movie-info">
                 <h4 className="title">{name}</h4>
+                <p>{year}</p>
               </div>
             </article>
           </Link>
